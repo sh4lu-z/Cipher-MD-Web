@@ -58,7 +58,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (phoneInput) {
         iti = window.intlTelInput(phoneInput, {
-            initialCountry: "lk",
+            initialCountry: "auto",
+            geoIpLookup: function (callback) {
+                fetch('/api/country')
+                    .then(res => res.ok ? res.json() : null)
+                    .then(data => callback(data && data.country ? data.country : 'us'))
+                    .catch(() => callback('us'));
+            },
             separateDialCode: true,
             dropdownContainer: document.body,
             utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js",
